@@ -1,5 +1,9 @@
-from app import app
+from app import app,db
+from flask import request,jsonify
+
 
 @app.route("/login",methods=['POST'])
 def login():
-	return "Welcome to lgin page"
+	data = request.get_json()
+
+	return "Welcome to login page"

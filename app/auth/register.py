@@ -1,5 +1,4 @@
-from app import app
-# db
+from app import app, db
 from flask import request,jsonify
 import json
 
@@ -7,7 +6,7 @@ import json
 def register():
 	data = request.get_json()
 	print(data)
-	is_user_already_registered = db.users.find_one({'email':data['email']})
+	is_user_already_registered =  False
 	if is_user_already_registered:
 		return jsonify({"message":"User is already registered"})
 	else:

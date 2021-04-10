@@ -2,14 +2,28 @@ from app import app, db
 from flask import request,jsonify, Flask
 import json
 from flask_pymongo import PyMongo
+from werkzeug.utils import secure_filename
+from werkzeug.datastructures import  FileStorage
 import os
 import pymongo
 import json
+import pandas as pd
+
 
 
 @app.route("/college/register",methods=["POST"])
 def registercollege():
     if(request.form):
+        name = request.form['name']
+        os.makedirs(os.path.join(app.instance_path, name), exist_ok=True)
+        f = request.files["file"]
+        
+        if(f):
+            f.save(os.path.join(app.instance_path, name, secure_filename(f.filename)))
+            print(f.filename)
+            xl_file = pd.ExcelFile(os.path.join(app.instance_path, name, f.filename))
+            dfs = {sheet_name: xl_file.parse(sheet_name) for sheet_name in xl_file.sheet_names}
+            print(dfs)
         return jsonify({"sent" : "Correctly"})
     else:
         data = request.get_json()

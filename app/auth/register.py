@@ -12,7 +12,7 @@ def register():
 	else:
 		try:
 			hashed_password = get_hashed_password(data["password"].encode('utf-8'))
-			db.users.insert_one({"email":data["email"],"password":hashed_password})
+			db.users.insert_one({"email":data["email"],"password":hashed_password,'college':""})
 			return jsonify({"message":"Registeration successful"})
 		except Exception as e:
 			print(e)

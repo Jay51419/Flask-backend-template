@@ -10,7 +10,7 @@ def login():
 		user = db["users"].find_one({"email":data["email"]})
 		print(user)
 		if user:
-			token = create_access_token(identity=data)
+			token = create_access_token(identity=data, fresh= True)
 			return jsonify({"message":"Login successful","token":token}) if check_password(data["password"].encode('utf-8'),user["password"]) else jsonify({"message":"Incorrect password"})
 		else:
 			return jsonify({"message":"User not found with this email."}) 

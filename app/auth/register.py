@@ -1,4 +1,5 @@
-from app import app, db
+from app import app
+# db
 from flask import request,jsonify
 import json
 

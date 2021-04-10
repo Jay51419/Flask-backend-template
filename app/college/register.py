@@ -6,12 +6,15 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import  FileStorage
 import os
 import pymongo
+from bson.json_util import dumps
 import json
 import pandas as pd
 from flask_jwt_extended import jwt_required, decode_token
 from pyqrcode import QRCode
 import pyqrcode
 import png
+import json
+
 
 base_mongo_uri= "mongodb://new-user:Football123@cluster0-shard-00-00.aydzz.mongodb.net:27017,cluster0-shard-00-01.aydzz.mongodb.net:27017,cluster0-shard-00-02.aydzz.mongodb.net:27017/myFirstDatabase?ssl=true&replicaSet=atlas-43ghe5-shard-0&authSource=admin&retryWrites=true&w=majority"
 base_db = PyMongo(app, base_mongo_uri).db
@@ -84,7 +87,7 @@ def registercollege():
         
         
 
-@app.route("/college/student", methods=["POST"])
+@app.route("/college/student", methods=["GET"])
 def addStudentDetails():
     user_email = decode_token(request.headers["Access-Token"])['sub']['email']
     user = base_db.users.find_one({'email':user_email})
@@ -157,13 +160,14 @@ def addStaffDetails():
             return jsonify({'message':'Something went wrong','error':e})
                 
         
-        
-# @app.route("/college/admin",methods=["GET"])
-# def adminDetails():
-#     user_email = decode_token(request.headers["Access-Token"])['sub']['email']
-#     user = base_db.users.find_one({'email':user_email})
-#     name = user['college']
-#     mongo_uri= "mongodb://new-user:Football123@cluster0-shard-00-00.aydzz.mongodb.net:27017,cluster0-shard-00-01.aydzz.mongodb.net:27017,cluster0-shard-00-02.aydzz.mongodb.net:27017/" + name + "?ssl=true&replicaSet=atlas-43ghe5-shard-0&authSource=admin&retryWrites=true&w=majority"
-#     mongodb_client = PyMongo(app,mongo_uri)
-#     db = mongodb_client.db
-#     college_details = db.details.find()
+@app.route("/college/admin", methods=["GET"])
+def adminDetails():
+    user_email = decode_token(request.headers["Access-Token"])['sub']['email']
+    user = base_db.users.find_one({'email':user_email})
+    # user = list(user)
+    name = user['college']
+    mongo_uri= "mongodb://new-user:Football123@cluster0-shard-00-00.aydzz.mongodb.net:27017,cluster0-shard-00-01.aydzz.mongodb.net:27017,cluster0-shard-00-02.aydzz.mongodb.net:27017/" + name + "?ssl=true&replicaSet=atlas-43ghe5-shard-0&authSource=admin&retryWrites=true&w=majority"
+    mongodb_client = PyMongo(app,mongo_uri)
+    db = mongodb_client.db
+    details = list(db.details.find({}))[0]
+    return jsonify({'name':details['name'],'principal':details["principal"],'website':details["website"],'mobile':details["mobile"],'address':details["address"]})
